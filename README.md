@@ -49,5 +49,5 @@
  Simulate helicoil type shortened or full quarter wave radial impedance matching
  with full length radial (abt 5.5m horizontal and 5.1m vertical).
 
- Simulate radiation pattern with shortened radial (radial mlength same as helicoil
+ Simulate radiation pattern with shortened radial (radial length same as helicoil
  antennas mechanical length). Dont care about impedance mismatch!
