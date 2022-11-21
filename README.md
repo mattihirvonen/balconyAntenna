@@ -34,13 +34,13 @@
 
  Where
 
- -?          this help
- -M          output format MAA (default NEC)
- -m          output segmentation max len (default conservative)
- -f MHz      frequency sweep max value [MHz] (default 40.000000)
- -r length   radiator length [m] (default 5.500000)
- -G          ground type grid net (default ladder)
- -F          not implemented)
- -a angle    radiator angle [deg] (default 0=horizontal, 90=vertical)
- -y          mirror y axis cordinate values (y -> -y)
+ - ?          this help
+ - M          output format MAA (default NEC)
+ - m          output segmentation max len (default conservative)
+ - f MHz      frequency sweep max value [MHz] (default 40.000000)
+ - r length   radiator length [m] (default 5.500000)
+ - G          ground type grid net (default ladder)
+ - F          not implemented)
+ - a angle    radiator angle [deg] (default 0=horizontal, 90=vertical)
+ - y          mirror y axis cordinate values (y -> -y)
 
