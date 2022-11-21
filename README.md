@@ -51,3 +51,9 @@
 
  Simulate radiation pattern with shortened radial (radial length same as helicoil
  antennas mechanical length). Dont care about impedance mismatch!
+
+ Example command to generate MAA file
+ - balconyAntenna -M >antenna20m.MAA
+
+ Example command to generate NEC file
+ - balconyAntenna -M >antenna20m.NEC
