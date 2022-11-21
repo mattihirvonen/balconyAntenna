@@ -1,5 +1,5 @@
 
-all: parvekeAntenni.exe
+all: balconyAntenna.exe
 
 Debug: all
 
@@ -11,8 +11,8 @@ cleanRelease: clean
 
 #------------------------------------------------
 
-parvekeAntenni.exe: main.cpp libwire.cpp Makefile
-	g++ main.cpp libwire.cpp -o parvekeAntenni.exe
+balconyAntenna.exe: main.cpp libwire.cpp Makefile
+	g++ main.cpp libwire.cpp -o balconyAntenna.exe
 
 clean:
-	del parvekeAntenni.exe
+	del balconyAntenna.exe
