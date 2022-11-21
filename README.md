@@ -44,3 +44,10 @@
  - **a** ***angle***     radiator angle [deg] (default 0=horizontal, 90=vertical)
  - **y**                 mirror y axis cordinate values (y -> -y)
 
+ Usage Ideas
+ -----------
+ Simulate helicoil type shortened or full quarter wave radial impedance matching
+ with full length radial (abt 5.5m horizontal and 5.1m vertical).
+
+ Simulate radiation pattern with shortened radial (radial mlength same as helicoil
+ antennas mechanical length). Dont care about impedance mismatch!
