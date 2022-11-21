@@ -30,7 +30,7 @@
  Command Line Options
  --------------------
 
- Usage:  balconyAntenna  [**-d**] [**-M**] [**-m**] [**-f** ***MHz***] [**-r** ***lenght***] [**-G | -F**] [**-a** ***angle***] [**-y**]
+ Usage:  balconyAntenna  [**-d**] [**-M**] [**-m**] [**-f** ***MHz***] [**-r** ***lenght***] [**-a** ***angle***] [**-G | -F**] [**-y**]
 
  Where
 
@@ -41,6 +41,6 @@
  - **r** ***length***    radiator length [m] (default 5.500000)
  - **G**                 ground type grid net (default ladder)
  - **F**                 not implemented
- - **-a** ***angle***    radiator angle [deg] (default 0=horizontal, 90=vertical)
+ - **a** ***angle***     radiator angle [deg] (default 0=horizontal, 90=vertical)
  - **y**                 mirror y axis cordinate values (y -> -y)
 
