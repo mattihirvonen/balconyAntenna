@@ -56,4 +56,4 @@
  - balconyAntenna -M >antenna20m.MAA
 
  Example command to generate NEC file
- - balconyAntenna -M >antenna20m.NEC
+ - balconyAntenna >antenna20m.NEC
