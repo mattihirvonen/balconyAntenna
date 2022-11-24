@@ -163,7 +163,7 @@ int foldedXYZ( wire_t *wire, double z, double dz )
     }
 
     double dz10m = gnd10m - dx_ladder[1];
-  setWire( wire, dx_ladder[1], 0,  z,    dx_ladder[1], 0, z-dz10m,   R, -1 );    wire++;   Nwires++;
+//  setWire( wire, dx_ladder[1], 0,  z,    dx_ladder[1], 0, z-dz10m,   R, -1 );    wire++;   Nwires++;
 
     return Nwires;
 }
