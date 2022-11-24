@@ -51,8 +51,9 @@ typedef struct
     double  maxFreq;       // "-f": frequency sweep max [MHz]
     double  radiator;      // "-r": Radiator length [m];
     int     ground;        // "-G": grond is grid screen
-    double  rotDegr;       // "-R": rotate antenna [deg]
+//  double  rotDegr;       // "-R": rotate antenna [deg]
     double  takeoffAngle;  // "-a": 0=horizontal, 90=vertical
+    double  rotation;      // "-R": rotate radiator clockwise [deg]
     int     mirrorY;       // "-y": mirror y axis coordinates
 } antenna_t;
 
@@ -169,7 +170,7 @@ int foldedXYZ( wire_t *wire, double z, double dz )
 }
 
 
-void setRadiator( wire_t *wire, double radiatorLen, double takeoffAngle, double deltaZ )
+void setRadiator( wire_t *wire, double radiatorLen, double takeoffAngle, double rotation, double deltaZ )
 {
     double  R   = 0.8;
     int     seg = -1;
@@ -179,6 +180,9 @@ void setRadiator( wire_t *wire, double radiatorLen, double takeoffAngle, double 
     wire->x2 = 0;
     wire->y2 = -radiatorLen * cos( takeoffAngle * PI / 180.0 );
     wire->z2 =  radiatorLen * sin( takeoffAngle * PI / 180.0 ) + deltaZ;
+
+    wire->x2 = wire->y2 * cos( rotation );
+    wire->y2 = wire->y2 * sin( rotation );
     wire->R  =  R;
     wire->seg=  seg;
 }
@@ -200,6 +204,7 @@ void help( const char *command )
     printf( "-G          ground type grid net (default ladder)\n" );
     printf( "-F          not implemented)\n" );
     printf( "-a angle    radiator angle [deg] (90=vertical, default 0=horizontal\n" );
+    printf( "-R angle    radiator angle [deg] (clockwise)\n" );
     printf( "-y          mirror y axis cordinate values (y -> -y)\n" );
     printf( "\n" );
 }
@@ -222,6 +227,7 @@ int parse_args( int argc, const char *argv[] )
         else if ( !strcmp(argv[i],"-G" ) )  { antenna.ground   = GROUND_GRIDNET;                      }
         else if ( !strcmp(argv[i],"-F" ) )  { antenna.ground   = GROUND_FOLDED;                       }
         else if ( !strcmp(argv[i],"-a" ) )  { sscanf(argv[i+1], "%lf", &antenna.takeoffAngle);  i++;  }
+        else if ( !strcmp(argv[i],"-R" ) )  { sscanf(argv[i+1], "%lf", &antenna.rotation);      i++;  }
         else if ( !strcmp(argv[i],"-y" ) )  { antenna.mirrorY  = 1;                                   }
         else {
             printf( "Unsupported command line argument: %s\n", argv[i] );
@@ -238,6 +244,8 @@ void print_args( void )
     printf("autoseg   %d\n",antenna.autoseg);
     printf("maxFreq   %f\n",antenna.maxFreq);
     printf("radiator  %f\n",antenna.radiator);
+    printf("takeoff   %f\n",antenna.takeoffAngle);
+    printf("rotation  %f\n",antenna.rotation);
 }
 
 
@@ -256,8 +264,8 @@ int main( int argc, const char *argv[] )
     if ( antenna.debug ) {
         print_args();
     }
-    setWire( wire, 0,0,0,   0,0,0.25,   0.8,  3 );                       wire++;  // Feed point element
-    setRadiator( wire, antenna.radiator, antenna.takeoffAngle, 0.25 );   wire++;  // Radiator   element
+    setWire( wire, 0,0,0,   0,0,0.25,   0.8,  3 );                                         wire++;  // Feed point element
+    setRadiator( wire, antenna.radiator, antenna.takeoffAngle, antenna.rotation, 0.25 );   wire++;  // Radiator   element
 
     if ( antenna.ground == GROUND_FOLDED ) {  Nwires = 2 + foldedXYZ( &wires[2], 0, dz );         }
     else                                   {  Nwires = 2 + ladderXYZ( &wires[2], 0, 0, 0, dz );   }
