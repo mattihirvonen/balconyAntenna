@@ -143,7 +143,7 @@ static void libwire::export_NEC_tail( FILE *outfile )
     float conduct = 0.05;
 
     fprintf( outfile, "GE   0\n" );
-    fprintf( outfile, "EX   0 %d %d 0 1.0	0.0\n", tag, seg );
+    fprintf( outfile, "EX   0 %d %d 0 1.0 0.0\n", tag, seg );
 //  fprintf( outfile, "EK\n" );
     fprintf( outfile, "GN   3 0 0 0 %f %f\n", dielect, conduct );
     fprintf( outfile, "FR   0 %d 0 0 %f %f\n", fSteps, fStart, fDelta );

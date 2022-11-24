@@ -15,6 +15,33 @@
 using namespace  std;
 using namespace  libwire;
 
+//--------------------------------------------------------------------------------------------------------------
+// Antenna default data:
+
+#define GROUND_TYPE  GROUND_FOLDED
+
+#if GROUND_TYPE == GROUND_FOLDED
+#define RADIATOR20m  5.8          // Radiator default length
+#else
+#define RADIATOR20m  5.5          // Radiator default length, default GROUND_LADDER
+#endif
+
+double  gnd20m = 4.3;    // Folded antenna:
+double  gnd15m = 3.1;    // - simulated as off center feed dipole
+double  gnd10m = 2.2;    // - counterpoise (=gnd) lengths
+
+double  dx_ladder[] = { 0.00, 1.21, 2.43, 3.48 };
+double  dy_ladder[] = { 0.00, 1.27  };
+
+double  dx_grid[]   = { 0.00, 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.48 };
+double  dy_grid[]   = { 0.00, 0.25, 0.50, 0.75, 1.00, 1.27  };
+
+double  dz     = -0.96;  // Balcony height [m]
+double  height = 15.0;   // Feed point height [m]
+
+//--------------------------------------------------------------------------------------------------------------
+
+wire_t  wires[1000];
 
 typedef struct
 {
@@ -32,21 +59,10 @@ typedef struct
 
 antenna_t antenna =
 {
-    0, FILETYPE_NEC, AUTOSEG_CONSERVATIVE, 40.0, 5.50, GROUND_LADDER
+    0, FILETYPE_NEC, AUTOSEG_CONSERVATIVE, 40.0, RADIATOR20m, GROUND_TYPE
 };
 
-
-wire_t  wires[1000];
-
-double  dx_ladder[] = { 0.00, 1.21, 2.43, 3.48 };
-double  dy_ladder[] = { 0.00, 1.27  };
-
-double  dx_grid[]   = { 0.00, 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.48 };
-double  dy_grid[]   = { 0.00, 0.25, 0.50, 0.75, 1.00, 1.27  };
-
-double  dz     = -0.96;  // Balcony height [m]
-double  height = 15.0;   // Feed point height [m]
-
+//--------------------------------------------------------------------------------------------------------------
 
 int ladderX( wire_t *wire, double x, double y, double z, double dz, double *dx, int nx )
 {
@@ -112,20 +128,42 @@ int foldedXYZ( wire_t *wire, double z, double dz )
     int     Nwires = 0;
     double  R      = 0.8;
 
-    double  len20m = 5.50;
-    double  len15m = 3.75;
-    double  len10m = 2.50;
+    setWire( wire, dx_ladder[0], 0,  z,    dx_ladder[1], 0, z,        R, -1 );    wire++;   Nwires++;
+    setWire( wire, dx_ladder[1], 0,  z,    dx_ladder[2], 0, z,        R, -1 );    wire++;   Nwires++;
+    setWire( wire, dx_ladder[2], 0,  z,    dx_ladder[3], 0, z,        R, -1 );    wire++;   Nwires++;
 
-    double x_20m = dx_ladder[3] - (len20m - (dx_ladder[1] + dx_ladder[2] + dx_ladder[3] + abs(dz)));
-    double z_15m = z - (len15m - (dx_ladder[1] + dx_ladder[2]));
+    if ( gnd20m > (dx_ladder[3] + fabs(dz)) )
+    {
+        double dx20m = gnd20m - (dx_ladder[3] + fabs(dz));
+        double x20m  = dx_ladder[3] - dx20m;
 
-    setWire( wire, dx_ladder[0], 0,  z,    dx_ladder[1], 0, z,      R, -1 );    wire++;   Nwires++;
-    setWire( wire, dx_ladder[1], 0,  z,    dx_ladder[2], 0, z,      R, -1 );    wire++;   Nwires++;
-    setWire( wire, dx_ladder[2], 0,  z,    dx_ladder[3], 0, z,      R, -1 );    wire++;   Nwires++;
-    setWire( wire, dx_ladder[3], 0,  z,    dx_ladder[3], 0, z+dz,   R, -1 );    wire++;   Nwires++;
-    setWire( wire, dx_ladder[3], 0,  z+dz, x_20m,        0, z+dz,   R, -1 );    wire++;   Nwires++;
+        setWire( wire, dx_ladder[3], 0,  z,    dx_ladder[3],  0, z+dz,     R, -1 );    wire++;   Nwires++;
+        setWire( wire, dx_ladder[3], 0,  z+dz, x20m,          0, z+dz,     R, -1 );    wire++;   Nwires++;
+    }
+    else
+    {
+        double dz20m = gnd20m - dx_ladder[3];
 
-    setWire( wire, dx_ladder[2], 0,  z,    dx_ladder[2], 0, z_15m,  R, -1 );    wire++;   Nwires++;
+        setWire( wire, dx_ladder[3], 0,  z,    dx_ladder[3], 0, z-dz20m,   R, -1 );    wire++;   Nwires++;
+    }
+
+    if ( gnd15m > (dx_ladder[2] + fabs(dz)) )
+    {
+        double dx15m = gnd20m - (dx_ladder[2] + fabs(dz));
+        double x15m  = dx_ladder[2] + dx15m;
+
+        setWire( wire, dx_ladder[2], 0,  z,    dx_ladder[2],  0, z+dz,     R, -1 );    wire++;   Nwires++;
+        setWire( wire, dx_ladder[2], 0,  z+dz, x15m,          0, z+dz,     R, -1 );    wire++;   Nwires++;
+    }
+    else
+    {
+        double dz15m = gnd15m - dx_ladder[2];
+
+        setWire( wire, dx_ladder[2], 0,  z,    dx_ladder[2], 0, z-dz15m,   R, -1 );    wire++;   Nwires++;
+    }
+
+    double dz10m = gnd10m - dx_ladder[1];
+  setWire( wire, dx_ladder[1], 0,  z,    dx_ladder[1], 0, z-dz10m,   R, -1 );    wire++;   Nwires++;
 
     return Nwires;
 }
