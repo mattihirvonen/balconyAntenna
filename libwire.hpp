@@ -29,16 +29,17 @@ typedef struct
     int     seg;                   // segmentation: mmana set -1 for auto segmentation
 } wire_t;
 
-
-namespace libwire {
-
+/*
 static void export_wire_maa( FILE *outfile, wire_t *wire );
-static void export_wire_nec( FILE *outfile, wire_t *wire );
+static int  export_wire_nec( FILE *outfile, wire_t *wire );
 
 static void export_MAA_head( FILE *outfile, double freq_MHz );
 static void export_MAA_tail( FILE *outfile );
-static void export_NEC_head( FILE *outfile, double freq_MHz );
+static void export_NEC_head( FILE *outfile );
 static void export_NEC_tail( FILE *outfile );
+*/
+
+namespace libwire {
 
 void export_filetype( int type, double maxMHz, int autoseg );
 void export_file(  FILE *outfile, wire_t *wire, int wirecount );

@@ -12,7 +12,7 @@ cleanRelease: clean
 #------------------------------------------------
 
 balconyAntenna.exe: main.cpp libwire.cpp Makefile
-	g++ main.cpp libwire.cpp -o balconyAntenna.exe
+	g++ -Wall -Wextra main.cpp libwire.cpp -o balconyAntenna.exe
 
 clean:
 	del balconyAntenna.exe

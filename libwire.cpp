@@ -66,7 +66,7 @@ void libwire::mirrorY( wire_t *wire, int wirecount )
 
 //----------------------------------------------------------------------------------
 
-static void libwire::export_wire_maa( FILE *outfile, wire_t *wire )
+static void export_wire_maa( FILE *outfile, wire_t *wire )
 {
     fprintf( outfile, "%8.3f,%8.3f,%8.3f,%8.3f,%8.3f,%8.3f,\t%e,\t%d\n",
              wire->x1, wire->y1, wire->z1,
@@ -76,7 +76,7 @@ static void libwire::export_wire_maa( FILE *outfile, wire_t *wire )
 }
 
 
-static void libwire::export_wire_nec( FILE *outfile, wire_t *wire )
+static int export_wire_nec( FILE *outfile, wire_t *wire )
 {
     static int ITG = 1;   // Tag number assigned to all segments of the wire.
            int NS  = 9;   // Number of segments into which the wire will be divided.
@@ -85,7 +85,7 @@ static void libwire::export_wire_nec( FILE *outfile, wire_t *wire )
         NS = wire->seg;
     }
     else {
-        NS = autosegment( wire, freqMax, segmentation );
+        NS = libwire::autosegment( wire, freqMax, segmentation );
     }
     fprintf( outfile, "GW %4d %4d", ITG, NS );
     fprintf( outfile, " %8.3f %8.3f %8.3f", wire->x1, wire->y1, wire->z1 );
@@ -93,10 +93,13 @@ static void libwire::export_wire_nec( FILE *outfile, wire_t *wire )
     fprintf( outfile, " %8.4f\n", wire->R / 1000.0 );
 
     ITG += 1;
+
+    return ITG;
 }
 
+//----------------------------------------------------------------------------------
 
-static void libwire::export_MAA_head( FILE *outfile, double freq_MHz )
+static void export_MAA_head( FILE *outfile, double freq_MHz )
 {
     fprintf( outfile, "%s\n", "Balcony whip antenna" );
     fprintf( outfile, "%s\n", "*" );
@@ -105,7 +108,7 @@ static void libwire::export_MAA_head( FILE *outfile, double freq_MHz )
 }
 
 
-static void libwire::export_MAA_tail( FILE *outfile )
+static void export_MAA_tail( FILE *outfile )
 {
     fprintf( outfile, "%s\n", "***Source***" );
     fprintf( outfile, "%s\n", "1,	0" );
@@ -121,7 +124,7 @@ static void libwire::export_MAA_tail( FILE *outfile )
 }
 
 
-static void libwire::export_NEC_head( FILE *outfile, double freq_MHz )
+static void export_NEC_head( FILE *outfile )
 {
     fprintf( outfile, "CM\n" );
     fprintf( outfile, "CM   Balcony whip antenna\n" );
@@ -130,7 +133,7 @@ static void libwire::export_NEC_head( FILE *outfile, double freq_MHz )
 }
 
 
-static void libwire::export_NEC_tail( FILE *outfile )
+static void export_NEC_tail( FILE *outfile )
 {
     int   tag = 1;
     int   seg = 2;
@@ -192,7 +195,7 @@ void libwire::export_file( FILE *outfile, wire_t *wire, int wirecount )
         export_MAA_tail( outfile );
     }
     else if ( filetype == FILETYPE_NEC ) {
-        export_NEC_head( outfile, 14.1 );
+        export_NEC_head( outfile );
         export_wires( outfile, wire, wirecount );
         export_NEC_tail( outfile );
     }

@@ -60,7 +60,8 @@ typedef struct
 
 antenna_t antenna =
 {
-    0, FILETYPE_NEC, AUTOSEG_CONSERVATIVE, 40.0, RADIATOR20m, GROUND_TYPE
+    0, FILETYPE_NEC, AUTOSEG_CONSERVATIVE, 40.0, RADIATOR20m, GROUND_TYPE,
+    0, 0, 0
 };
 
 //--------------------------------------------------------------------------------------------------------------
