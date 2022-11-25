@@ -8,6 +8,7 @@
  This generator generates template file
  - NEC file format for EZnec and 4NEC2 applications
  - MAA file format for MMANA-GAL application
+
  Main idea of this generator is to generate wire net list for antenna simulation
  applications. All other simulation configuration parameters should set in
  antenna simulation application.
@@ -30,7 +31,7 @@
 
  "sampleExe.zip" contain ready compiled 64 bits example runtime code "balconyAntenna.exe".
  Runtime executable code might be later a bit out dated from source codes:
- - read executable file's current command command line options with command **"balcomyAntenna -?"**
+ - read executable file's current command command line options with command **"balconyAntenna -?"**
  - check antenna model wiring vith antenna simulation applications "view/visualize antenna" operation
 
  Command Line Options
