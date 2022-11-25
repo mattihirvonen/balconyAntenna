@@ -184,8 +184,8 @@ void setRadiator( wire_t *wire, double radiatorLen, double takeoffAngle, double 
     wire->y2 = -radiatorLen * cos( takeoffAngle * PI / 180.0 );
     wire->z2 =  radiatorLen * sin( takeoffAngle * PI / 180.0 ) + deltaZ;
 
-    wire->x2 = wire->y2 * cos( rotation );
-    wire->y2 = wire->y2 * sin( rotation );
+    wire->x2 = wire->y2 * sin( rotation );
+    wire->y2 = wire->y2 * cos( rotation );
     wire->R  =  R;
     wire->seg=  seg;
 }
