@@ -9,7 +9,8 @@
  - NEC file format for EZnec and 4NEC2 applications
  - MAA file format for MMANA-GAL application
  Main idea of this generator is to generate wire net list for antenna simulation
- applications. All other simulation configuration should set in simulation application.
+ applications. All other simulation configuration parameters should set in
+ antenna simulation application.
 
  Toolchain
  ---------
@@ -26,6 +27,10 @@
  - libgcc_s_seh-1.dll
  - libstdc++-6.dll
  - libwinpthread-1.dll
+ "sampleExe.zip" contain ready compiled 64 bits example runtime code "balconyAntenna.exe".
+ Runtime executable code might be later a bit out dated from source codes:
+ - read executable file's current command command line options with command **"balcomyAntenna -?"**
+ - check antenna model wiring vith antenna simulation applications "view/visualize antenna" operation
 
  Command Line Options
  --------------------
@@ -36,12 +41,13 @@
 
  - **?**                 this help
  - **M**                 output format MAA (default NEC)
- - **m**                 output segmentation max len (default conservative)
+ - **m**                 output segmentation strategy max length (default conservative)
  - **f** ***MHz***       frequency sweep max value [MHz] (default 40.000000)
  - **r** ***length***    radiator length [m] (default 5.500000)
  - **G**                 ground type grid net (default ladder)
- - **F**                 not implemented
- - **a** ***angle***     radiator angle [deg] (default 0=horizontal, 90=vertical)
+ - **F**                 ground type folded dipole (default ladder)
+ - **T** ***angle***     radiator angle [deg] (take off default 0=horizontal, 90=vertical)
+ - **R** ***angle***     radiator angle [deg] (rotation clockwise)
  - **y**                 mirror y axis cordinate values (y -> -y)
 
  Usage Ideas
@@ -53,7 +59,7 @@
  antennas mechanical length). Dont care about impedance mismatch!
 
  Example command to generate MAA file
- - balconyAntenna -M >antenna20m.MAA
+ - balconyAntenna -M >antenna20m.maa
 
  Example command to generate NEC file
- - balconyAntenna >antenna20m.NEC
+ - balconyAntenna >antenna20m.nec
