@@ -27,6 +27,7 @@
  - libgcc_s_seh-1.dll
  - libstdc++-6.dll
  - libwinpthread-1.dll
+
  "sampleExe.zip" contain ready compiled 64 bits example runtime code "balconyAntenna.exe".
  Runtime executable code might be later a bit out dated from source codes:
  - read executable file's current command command line options with command **"balcomyAntenna -?"**
