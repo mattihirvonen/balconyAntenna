@@ -124,7 +124,7 @@ static void libwire::export_MAA_tail( FILE *outfile )
 static void libwire::export_NEC_head( FILE *outfile, double freq_MHz )
 {
     fprintf( outfile, "CM\n" );
-    fprintf( outfile, "CM Balcony whip antenna\n" );
+    fprintf( outfile, "CM   Balcony whip antenna\n" );
     fprintf( outfile, "CM\n" );
     fprintf( outfile, "CE\n" );
 }
