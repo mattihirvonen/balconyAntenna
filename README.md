@@ -46,9 +46,10 @@
  - **m**                 output segmentation strategy max length (default conservative)
  - **f** ***MHz***       frequency sweep max value [MHz] (default 40.000000)
  - **r** ***length***    radiator length [m] (default 5.500000)
- - **G**                 ground type grid net (default ladder)
- - **F**                 ground type folded dipole (default ladder)
- - **T** ***angle***     radiator angle [deg] (take off default 0=horizontal, 90=vertical)
+ - **F**                 ground type folded dipole (default)
+ - **G**                 ground type grid net
+ - **L**                 ground type ladder
+ - **T** ***angle***     radiator angle [deg] (tilt/take off: default 0=horizontal, 90=vertical)
  - **R** ***angle***     radiator angle [deg] (rotation clockwise)
  - **y**                 mirror y axis cordinate values (y -> -y)
 

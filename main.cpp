@@ -6,9 +6,9 @@
 #include <math.h>
 #include "libwire.hpp"
 
-#define  GROUND_LADDER   0
-#define  GROUND_GRIDNET  1
-#define  GROUND_FOLDED   2
+#define  GROUND_FOLDED   0   // Default is unsymmetric off center feed dipole
+#define  GROUND_LADDER   1
+#define  GROUND_GRIDNET  2
 
 #define  PI  3.14159
 
@@ -23,7 +23,7 @@ using namespace  libwire;
 #if GROUND_TYPE == GROUND_FOLDED
 #define RADIATOR20m  5.8          // Radiator default length
 #else
-#define RADIATOR20m  5.5          // Radiator default length, default GROUND_LADDER
+#define RADIATOR20m  5.5          // Radiator default length, default for GROUND_LADDER
 #endif
 
 double  gnd20m = 4.3;    // Folded antenna:
@@ -52,7 +52,7 @@ typedef struct
     double  radiator;      // "-r": Radiator length [m];
     int     ground;        // "-G": grond is grid screen
 //  double  rotDegr;       // "-R": rotate antenna [deg]
-    double  takeoffAngle;  // "-a": 0=horizontal, 90=vertical
+    double  takeoffAngle;  // "-T": tilt 0=horizontal, 90=vertical
     double  rotation;      // "-R": rotate radiator clockwise [deg]
     int     mirrorY;       // "-y": mirror y axis coordinates
 } antenna_t;
@@ -112,7 +112,7 @@ int ladderXYZ( wire_t *wire, double x, double y, double z, double dz )
         wire += Nx;
         Ny    = ladderY( wire, x, y, z, dz, dy_grid, 5 );
     }
-    else
+    else   // GROUND_LADDER
     {
         Nx    = ladderX( wire, x, y, z, dz, dx_ladder, 3 );
         wire += Nx;
@@ -120,8 +120,6 @@ int ladderXYZ( wire_t *wire, double x, double y, double z, double dz )
     }
     return 1 + Nx + Ny;  // Count of wires
 }
-
-
 
 
 int foldedXYZ( wire_t *wire, double z, double dz )
@@ -172,6 +170,7 @@ int foldedXYZ( wire_t *wire, double z, double dz )
     return Nwires;
 }
 
+//------------------------------------------------------------------------------------------------------
 
 void setRadiator( wire_t *wire, double radiatorLen, double takeoffAngle, double rotation, double deltaZ )
 {
@@ -195,18 +194,20 @@ void setRadiator( wire_t *wire, double radiatorLen, double takeoffAngle, double 
 void help( const char *command )
 {
     printf( "\n" );
-    printf( "Usage:  %s [-d] [-M] [-m] [-f MHz] [-r lenght] [-G | -F] [-a angle] [-y]\n" );
+    printf( "Usage:  %s  [-d] [-M] [-m] [-f MHz] [-r lenght] [-G | -F] [-a angle] [-y]\n", command );
     printf( "\n" );
     printf( "Where\n" );
     printf( "\n" );
     printf( "-?          this help\n" );
-    printf( "-M          output format MAA (default NEC)\n" );
-    printf( "-m          output segmentation strategy max lenlength (default conservative)\n" );
+    printf( "-M          output format MAA\n" );
+    printf( "-N          output format NEC (default)\n" );
+    printf( "-m          segmentation strategy max length (default conservative)\n" );
     printf( "-f MHz      frequency sweep max value [MHz] (default %f)\n",antenna.maxFreq );
     printf( "-r length   radiator length [m] (default %f)\n", antenna.radiator );
-    printf( "-G          ground type grid net (default ladder)\n" );
-    printf( "-F          ground type folded dipole (default ladder)\n" );
-    printf( "-T angle    radiator angle [deg] (take off 90=vertical, default 0=horizontal\n" );
+    printf( "-F          ground type folded dipole (default)\n" );
+    printf( "-G          ground type grid net\n" );
+    printf( "-L          ground type ladder\n" );
+    printf( "-T angle    radiator angle [deg] (tilt/take off 90=vertical, default 0=horizontal)\n" );
     printf( "-R angle    radiator angle [deg] (rotation clockwise)\n" );
 //  printf( "-y          mirror y axis cordinate values (y -> -y)\n" );
     printf( "\n" );
@@ -224,11 +225,13 @@ int parse_args( int argc, const char *argv[] )
              if ( !strcmp(argv[i],"-?" ) )  { return -1;                                              }
         else if ( !strcmp(argv[i],"-d" ) )  { antenna.debug    = 1;                                   }
         else if ( !strcmp(argv[i],"-M" ) )  { antenna.filetype = FILETYPE_MAA;                        }
+        else if ( !strcmp(argv[i],"-N" ) )  { antenna.filetype = FILETYPE_NEC;                        }
         else if ( !strcmp(argv[i],"-m" ) )  { antenna.autoseg  = AUTOSEG_MAXLENGTH;                   }
         else if ( !strcmp(argv[i],"-f" ) )  { sscanf(argv[i+1], "%lf", &antenna.maxFreq);       i++;  }
         else if ( !strcmp(argv[i],"-r" ) )  { sscanf(argv[i+1], "%lf", &antenna.radiator);      i++;  }
-        else if ( !strcmp(argv[i],"-G" ) )  { antenna.ground   = GROUND_GRIDNET;                      }
         else if ( !strcmp(argv[i],"-F" ) )  { antenna.ground   = GROUND_FOLDED;                       }
+        else if ( !strcmp(argv[i],"-G" ) )  { antenna.ground   = GROUND_GRIDNET;                      }
+        else if ( !strcmp(argv[i],"-L" ) )  { antenna.ground   = GROUND_LADDER;                       }
         else if ( !strcmp(argv[i],"-T" ) )  { sscanf(argv[i+1], "%lf", &antenna.takeoffAngle);  i++;  }
         else if ( !strcmp(argv[i],"-R" ) )  { sscanf(argv[i+1], "%lf", &antenna.rotation);      i++;  }
 //      else if ( !strcmp(argv[i],"-y" ) )  { antenna.mirrorY  = 1;                                   }
@@ -253,32 +256,36 @@ void print_args( void )
 
     switch ( antenna.ground )
     {
-        case 1:
-            strcpy( gndtype, "grid" );
-            break;
-
-        case 2:
+        case GROUND_FOLDED:
             strcpy( gndtype, "folded dipole" );
             break;
 
-        default:
+        case GROUND_LADDER:
             strcpy( gndtype, "ladder" );
+            break;
+
+        case GROUND_GRIDNET:
+            strcpy( gndtype, "grid" );
+            break;
+
+        default:
+            strcpy( gndtype, "folded dipole" );
             break;
     }
     print_debug_comment();
     printf("filetype    %s\n", (antenna.filetype == FILETYPE_MAA) ? "MAA" : "NEC");
     print_debug_comment();
-    printf("autoseg     %s\n", antenna.autoseg ? "Max Length" : "Conservative");
+    printf("autoseg     %s\n",  antenna.autoseg ? "Max Length" : "Conservative");
     print_debug_comment();
-    printf("maxFreq     %f\n",antenna.maxFreq);
+    printf("maxFreq     %f\n",  antenna.maxFreq);
     print_debug_comment();
-    printf("radiator    %f\n",antenna.radiator);
+    printf("radiator    %f\n",  antenna.radiator);
     print_debug_comment();
-    printf("takeoff     %f\n",antenna.takeoffAngle);
+    printf("takeoff     %f\n",  antenna.takeoffAngle);
     print_debug_comment();
-    printf("rotation    %f\n",antenna.rotation);
+    printf("rotation    %f\n",  antenna.rotation);
     print_debug_comment();
-    printf("gnd type    %s\n",gndtype);
+    printf("gnd type    %s\n",  gndtype);
     print_debug_comment();
     printf("=============================================================\n");
 }
